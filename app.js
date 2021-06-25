@@ -67,42 +67,46 @@ const galleryItems = [
 //Знаходимо потрібний елемент-список (ul) на який треба почепити його елементи створені скріптом
 const imagesGaleryListEl = document.querySelector('ul.js-gallery');
 
-//розмітка, яку має створити скріпт
-    /* <li class="gallery__item">
-  <a
-    class="gallery__link"
-    href="https://cdn.pixabay.com/photo/2010/12/13/10/13/tulips-2546_1280.jpg"
-  >
-    <img
-      class="gallery__image"
-      src="https://cdn.pixabay.com/photo/2010/12/13/10/13/tulips-2546__340.jpg"
-      data-source="https://cdn.pixabay.com/photo/2010/12/13/10/13/tulips-2546_1280.jpg"
-      alt="Tulips"
-    />
-  </a>
-</li> */
+//Функція в яка отримує данні із масиву по конкретному зображенню, створює та повертає розмітку елемента списку
+const imagesGaleryListCreate = ({preview, original,  description}) => {
+    //Створюємо елемент списку "li" та додаємо йому необхідний клас
+    const galeryListItemEl = document.createElement('li');
+    galeryListItemEl.classList.add('gallery__item');
 
-//Створюємо елемент списку "li" та додаємо йому необхідний клас
-const galeryListItemEl = document.createElement('li');
-galeryListItemEl.classList.add('gallery__item');
+    //Створюємо елемент посилання "a" та додаємо йому необхідний клас s і атрибут
+    const galeryListLinkEl = document.createElement('a');
+    galeryListLinkEl.classList.add('gallery__link');
+    galeryListLinkEl.href = original;
 
-//Створюємо елемент посилання "a" та додаємо йому необхідний клас s і атрибут
-const galeryListLinkEl = document.createElement('a');
-galeryListLinkEl.classList.add('gallery__link');
-galeryListLinkEl.href = 'https://cdn.pixabay.com/photo/2010/12/13/10/13/tulips-2546_1280.jpg';
+    //Створюємо елемент зображення "img" та додаємо йому необхідний клас s і атрибути
+    const galeryListImageEl = document.createElement('img');
+    galeryListImageEl.classList.add('gallery__image');
+    galeryListImageEl.src = preview;
+    galeryListImageEl.setAttribute('data-source', original);
+    galeryListImageEl.alt = description;
 
-//Створюємо елемент зображення "img" та додаємо йому необхідний клас s і атрибути
-const galeryListImageEl = document.createElement('img');
-galeryListImageEl.classList.add('gallery__image');
-galeryListImageEl.src = 'https://cdn.pixabay.com/photo/2010/12/13/10/13/tulips-2546__340.jpg';
-galeryListImageEl.setAttribute('data-source', 'https://cdn.pixabay.com/photo/2010/12/13/10/13/tulips-2546_1280.jpg');
-galeryListImageEl.alt = 'Tulips';
+    //Додаємо створений елемент зображення в середину створеного елемента посилання
+    galeryListLinkEl.append(galeryListImageEl);
 
-//Додаємо створений елемент зображення в середину створеного елемента посилання
-galeryListLinkEl.append(galeryListImageEl);
+    //Додаємо створений елемент посилання в середину створеного елемента списку
+    galeryListItemEl.append(galeryListLinkEl);
+    
+    //Повертаємо результат роботи функції
+    return galeryListItemEl;
+}
 
-//Додаємо створений елемент посилання в середину створеного елемента списку
-galeryListItemEl.append(galeryListLinkEl);
+//створення масиву з розміткою елементів галереї за рахунок перебору масиву з даними
+//методом месивів "map", який по кожному елементу масиву виконує функцію imagesGaleryListCreate
+//та повертає масив з результатами її виконання
+const listItems = galleryItems.map(imagesGaleryListCreate);
 
-//Додаємо створений елемент посилання в знайдений елемент список "ul" для перевірки
-imagesGaleryListEl.append(galeryListItemEl);
+//Додаємо створеі елементи списку в знайдений елемент список "ul" за рахунок 
+//функції append в яку розпилюємо масив з розміткою
+imagesGaleryListEl.append(...listItems);
+
+
+
+
+
+
+
