@@ -67,12 +67,6 @@ const galleryItems = [
 //Знаходимо потрібний елемент-список (ul) на який треба почепити його елементи створені скріптом
 const imagesGaleryListEl = document.querySelector('ul.js-gallery');
 
-//Знаходимо елемент бекдропу модального вікна
-const modalWindowEl = document.querySelector('.js-lightbox');
-
-//Знаходимо елемент зображення модального вікна
-const modalImageEl = document.querySelector('.lightbox__image');
-
             /*РОЗМІТКА ГАЛЕРЕЇ*/
 
 //Функція в яка отримує данні із масиву по конкретному зображенню, створює та повертає розмітку елемента списку
@@ -114,6 +108,14 @@ imagesGaleryListEl.append(...listItems);
 
             /*МОДАЛЬНЕ ВІКНО*/
             
+ //Знаходимо елемент бекдропу модального вікна
+const modalWindowEl = document.querySelector('.js-lightbox');
+
+//Знаходимо елемент зображення модального вікна
+const modalImageEl = document.querySelector('.lightbox__image');
+
+const modalCloseButtonEl = document.querySelector('button[data-action="close-lightbox"]');
+
 //Функція яка відкриває модальне вікно та, передає його
 //елементу зображення значення url великого зображення із об'єкту dataset та
 //ключа source елементу зображення, по якому відбувся клік, та передає значенню src його 
@@ -133,6 +135,16 @@ function modalOpen(event) {
 
 //Слухач, який при кліку на елемент-список виконує функцію modalOpen
 imagesGaleryListEl.addEventListener('click', modalOpen);
+
+//Функція, яка закриває модальне вікно та обнуляє авраметри src та alt
+// зображення модалки при кліці на кнопку 
+function modalClose() {
+    modalWindowEl.classList.remove('is-open');
+    modalImageEl.src = "";
+    modalImageEl.alt = "";
+}
+//Слухач, який при кліці на елемент кнопки закриття модального вікна виконує функцію modalClose
+modalCloseButtonEl.addEventListener('click', modalClose);
 
 
 
