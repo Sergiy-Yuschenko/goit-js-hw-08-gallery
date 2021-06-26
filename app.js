@@ -116,6 +116,10 @@ const modalImageEl = document.querySelector('.lightbox__image');
 
 const modalCloseButtonEl = document.querySelector('button[data-action="close-lightbox"]');
 
+// const modalContentEl = document.querySelector('div.lightbox__content');
+
+const modalOverlayEl = document.querySelector('div.lightbox__overlay');
+
 //Функція яка відкриває модальне вікно та, передає його
 //елементу зображення значення url великого зображення із об'єкту dataset та
 //ключа source елементу зображення, по якому відбувся клік, та передає значенню src його 
@@ -131,6 +135,11 @@ function modalOpen(event) {
     modalImageEl.src = event.target.dataset.source;
     //отримання значення атрибута alt та передача його в src елемента зображення модалки
     modalImageEl.alt = event.target.alt;
+
+    //Слухач, який при кліці на елемент кнопки закриття модального вікна виконує функцію modalClose
+    modalCloseButtonEl.addEventListener('click', modalClose);
+    //Слухач, який при кліці на елемент modalOverlayEl виконує функцію modalClose
+    modalOverlayEl.addEventListener('click', modalClose);
 }
 
 //Слухач, який при кліку на елемент-список виконує функцію modalOpen
@@ -142,9 +151,11 @@ function modalClose() {
     modalWindowEl.classList.remove('is-open');
     modalImageEl.src = "";
     modalImageEl.alt = "";
+
+    modalOverlayEl.removeEventListener('click', modalClose);
+    modalOverlayEl.removeEventListener('click', modalClose);
 }
-//Слухач, який при кліці на елемент кнопки закриття модального вікна виконує функцію modalClose
-modalCloseButtonEl.addEventListener('click', modalClose);
+
 
 
 
