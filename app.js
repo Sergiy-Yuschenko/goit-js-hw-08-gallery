@@ -67,6 +67,14 @@ const galleryItems = [
 //Знаходимо потрібний елемент-список (ul) на який треба почепити його елементи створені скріптом
 const imagesGaleryListEl = document.querySelector('ul.js-gallery');
 
+//Знаходимо елемент бекдропу модального вікна
+const modalWindowEl = document.querySelector('.js-lightbox');
+
+//Знаходимо елемент зображення модального вікна
+const modalImageEl = document.querySelector('.lightbox__image');
+
+            /*РОЗМІТКА ГАЛЕРЕЇ*/
+
 //Функція в яка отримує данні із масиву по конкретному зображенню, створює та повертає розмітку елемента списку
 const imagesGaleryListCreate = ({preview, original,  description}) => {
     //Створюємо елемент списку "li" та додаємо йому необхідний клас
@@ -103,6 +111,30 @@ const listItems = galleryItems.map(imagesGaleryListCreate);
 //Додаємо створеі елементи списку в знайдений елемент список "ul" за рахунок 
 //функції append в яку розпилюємо масив з розміткою
 imagesGaleryListEl.append(...listItems);
+
+            /*МОДАЛЬНЕ ВІКНО*/
+            
+//Функція яка відкриває модальне вікно та, передає його
+//елементу зображення значення url великого зображення із об'єкту dataset та
+//ключа source елементу зображення, по якому відбувся клік, та передає значенню src його 
+//елементу значення src зображення, по якому відбувся клік
+function modalOpen(event) {
+    //Гардклоуз, що спрацьовує якщо клік відбувся по галереї, але не потрапив на жлдну з картинок
+    if (event.target.nodeName !== 'IMG') return;
+    //блокування переходу за посиланням
+    event.preventDefault();
+    //відкривання модалки
+    modalWindowEl.classList.add('is-open');
+    //отримання url великого зображення та передача його в src елемента зображення модалки
+    modalImageEl.src = event.target.dataset.source;
+    //отримання значення атрибута alt та передача його в src елемента зображення модалки
+    modalImageEl.alt = event.target.alt;
+}
+
+//Слухач, який при кліку на елемент-список виконує функцію modalOpen
+imagesGaleryListEl.addEventListener('click', modalOpen);
+
+
 
 
 
