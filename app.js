@@ -107,23 +107,34 @@ const listItems = galleryItems.map(imagesGaleryListCreate);
 imagesGaleryListEl.append(...listItems);
 
             /*МОДАЛЬНЕ ВІКНО*/
-            
- //Знаходимо елемент бекдропу модального вікна
+ 
+//Змінна для зберігання поточного елементу зображення
+let curentImage;
+          
+//Знаходимо елемент бекдропу модального вікна
 const modalWindowEl = document.querySelector('.js-lightbox');
-
 //Знаходимо елемент зображення модального вікна
 const modalImageEl = document.querySelector('.lightbox__image');
-
+//Знаходимо елемент кнопки закривання модального вікна
 const modalCloseButtonEl = document.querySelector('button[data-action="close-lightbox"]');
-
-// const modalContentEl = document.querySelector('div.lightbox__content');
-
+//Знаходимо елемент заднього фону модалки
 const modalOverlayEl = document.querySelector('div.lightbox__overlay');
 
-//Функція яка відкриває модальне вікно та, передає його
-//елементу зображення значення url великого зображення із об'єкту dataset та
-//ключа source елементу зображення, по якому відбувся клік, та передає значенню src його 
-//елементу значення src зображення, по якому відбувся клік
+//Слухач, який при кліку на елемент-список виконує функцію modalOpen
+imagesGaleryListEl.addEventListener('click', modalOpen);
+
+// Функція, яка передає елементу зображення модального вікна значення url великого зображення
+//із об'єкту dataset та ключа source  та передає значенню елементу значення src з обраного елементу зображення
+//галереї
+function gettingImageData(imgEl) {
+    
+    //отримання url великого зображення та передача його в src елемента зображення модалки
+    modalImageEl.src = imgEl.dataset.source;
+    //отримання значення атрибута alt та передача його в src елемента зображення модалки
+    modalImageEl.alt = imgEl.alt;
+}
+
+//Функція яка відкриває модальне вікно та, елементу зображення, по якому відбувся клік, зображення, по якому відбувся клік
 function modalOpen(event) {
     //Гардклоуз, що спрацьовує якщо клік відбувся по галереї, але не потрапив на жлдну з картинок
     if (event.target.nodeName !== 'IMG') return;
@@ -131,19 +142,17 @@ function modalOpen(event) {
     event.preventDefault();
     //відкривання модалки
     modalWindowEl.classList.add('is-open');
-    //отримання url великого зображення та передача його в src елемента зображення модалки
-    modalImageEl.src = event.target.dataset.source;
-    //отримання значення атрибута alt та передача його в src елемента зображення модалки
-    modalImageEl.alt = event.target.alt;
+
+    curentImage = event.target;
+
+    gettingImageData(curentImage);
 
     //Слухач, який при кліці на елемент кнопки закриття модального вікна виконує функцію modalClose
     modalCloseButtonEl.addEventListener('click', modalClose);
     //Слухач, який при кліці на елемент modalOverlayEl виконує функцію modalClose
     modalOverlayEl.addEventListener('click', modalClose);
+    window.addEventListener('keydown', keydownAct);
 }
-
-//Слухач, який при кліку на елемент-список виконує функцію modalOpen
-imagesGaleryListEl.addEventListener('click', modalOpen);
 
 //Функція, яка закриває модальне вікно та обнуляє авраметри src та alt
 // зображення модалки при кліці на кнопку 
@@ -154,6 +163,41 @@ function modalClose() {
 
     modalOverlayEl.removeEventListener('click', modalClose);
     modalOverlayEl.removeEventListener('click', modalClose);
+    window.removeEventListener('keydown', keydownAct);
+}
+
+//функція, в яку передається код натиснутої клавіші і яка виконує певні дії з модалкою при натисканні деяких
+//із них
+function keydownAct({code}) {
+    switch (code) {
+        //Закриваємо модалку при натисканні клавіші "Esc"
+        case 'Escape':
+            modalClose();
+            break;
+        //Пролистуємо зображення у відкритому модальному вікні вправо при натисканні кнопки "стрілка вправо"
+        case 'ArrowRight':
+            if (curentImage.parentNode.parentNode === imagesGaleryListEl.lastElementChild) {
+                curentImage = imagesGaleryListEl.firstElementChild.firstChild.firstChild;
+                gettingImageData(curentImage);
+            } else {
+                curentImage = curentImage.parentNode.parentNode.nextElementSibling.firstChild.firstChild;
+                gettingImageData(curentImage);
+            }
+            break;
+        //Пролистуємо зображення у відкритому модальному вікні вліво при натисканні кнопки "стрілка вліво"
+        case 'ArrowLeft':
+            if (curentImage.parentNode.parentNode === imagesGaleryListEl.firstElementChild) {
+                curentImage = imagesGaleryListEl.lastElementChild.firstChild.firstChild;
+                gettingImageData(curentImage);
+            } else {
+                curentImage = curentImage.parentNode.parentNode.previousElementSibling.firstChild.firstChild;
+                gettingImageData(curentImage);
+            }
+            break;
+        //Завершуємо роботу фенкції при натисканні інших клавіш
+        default:
+            return;
+    }
 }
 
 
